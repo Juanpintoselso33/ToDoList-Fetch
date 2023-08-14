@@ -5,10 +5,6 @@ const Home = () => {
   const [inputValue, setInputValue] = useState("");
   const [toDoList, setToDoList] = useState([]);
 
-  useEffect(() => {
-    console.log(toDoList);
-  }, [toDoList]);
-
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
       setToDoList(toDoList.concat(inputValue));
