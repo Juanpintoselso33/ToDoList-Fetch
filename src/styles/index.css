@@ -52,11 +52,11 @@ h1 {
     opacity: 0;
     background: transparent;
     color: red;
-    transition: opacity 0.5s ease; /* Agrega un efecto de desvanecimiento */
+    transition: opacity 0.5s ease; 
   }
   
   .list-group-item:hover button {
-    opacity: 1; /* Muestra la "X" cuando se pasa el cursor sobre el elemento de la lista */
+    opacity: 1; 
   }
   
   .list-group-item:hover button {

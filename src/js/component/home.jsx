@@ -1,9 +1,60 @@
 import React, { useState, useEffect } from "react";
-import '../index'; 
+import "../index";
 
 const Home = () => {
   const [inputValue, setInputValue] = useState("");
   const [toDoList, setToDoList] = useState([]);
+
+  useEffect(() => {
+    createUser();
+    sendEmptyTask(); 
+  }, []);
+
+  useEffect(() => {
+    updateToDo(toDoList);
+  }, [toDoList]);
+
+  const createUser = async () => {
+    const response = await fetch(
+      "https://playground.4geeks.com/apis/fake/todos/user/juanpintoselso",
+      {
+        method: "POST",
+        body: JSON.stringify([]),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const data = await response.json();
+    console.log(data);
+  };
+
+  async function updateToDo(toDo) {
+    try {
+      const response = await fetch(
+        "https://playground.4geeks.com/apis/fake/todos/user/juanpintoselso",
+        {
+          method: "PUT",
+          body: JSON.stringify(toDo),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log(response.ok); // will be true if the response is successful
+      console.log(response.status); // the status code = 200 or code = 400 etc.
+      const text = await response.text(); // will try to return the exact result as a string
+      console.log(text);
+      const data = await response.json(); // will try to parse the result as JSON
+
+      //here is where your code should start after the fetch finishes
+      console.log(data); //this will print on the console the exact object received from the server
+    } catch (error) {
+      //error handling
+      console.log(error);
+    }
+  }
 
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
@@ -12,10 +63,28 @@ const Home = () => {
     }
   };
 
-  const handleDelete = (index) => {
+  const handleDelete = async (index) => {
     const newToDoList = [...toDoList];
     newToDoList.splice(index, 1);
+  
+    if (newToDoList.length === 0) {
+      sendEmptyTask(); 
+      await updateToDo(sendEmptyTask());
+    } else {
+      await updateToDo(newToDoList);
+    }  
     setToDoList(newToDoList);
+  };
+
+  const sendEmptyTask = async () => {
+    const emptyTask = [{ label: "No hay tareas", done: false }];
+    await updateToDo(emptyTask);
+  };
+
+  const clearToDo = async () => {
+    sendEmptyTask(); 
+    await updateToDo(emptyTask); 
+    setToDoList([]); 
   };
 
   return (
@@ -27,7 +96,10 @@ const Home = () => {
         <div className="col-6">
           <div className="list-container">
             <ul className="list-group">
-              <li className="list-group-item d-flex justify-content-between align-items-center border rounded-0 fade-in" style={{ color: "grey", fontSize: "20px" }}>
+              <li
+                className="list-group-item d-flex justify-content-between align-items-center border rounded-0 fade-in"
+                style={{ color: "grey", fontSize: "20px" }}
+              >
                 <input
                   type="text"
                   className="form-control border-0 rounded-0"
@@ -39,13 +111,33 @@ const Home = () => {
                 />
               </li>
               {toDoList.map((task, index) => (
-                <li className="list-group-item d-flex justify-content-between align-items-center border rounded-0 fade-in" key={index} style={{ color: "grey", fontSize: "20px" }}>
+                <li
+                  className="list-group-item d-flex justify-content-between align-items-center border rounded-0 fade-in"
+                  key={index}
+                  style={{ color: "grey", fontSize: "20px" }}
+                >
                   <span>{task}</span>
-                  <button className="btn" style={{ background: "transparent", color: "red" }} onClick={() => handleDelete(index)}>X</button>
+                  <button
+                    className="btn"
+                    style={{ background: "transparent", color: "red" }}
+                    onClick={() => handleDelete(index)}
+                  >
+                    X
+                  </button>
                 </li>
               ))}
-              <li className="list-group-item d-flex justify-content-start align-items-center border rounded-0" style={{ color: "grey", fontSize: "14px", fontStyle: "italic" }}>
+              <li
+                className="list-group-item d-flex justify-content-between align-items-center border rounded-0"
+                style={{ color: "grey", fontSize: "14px", fontStyle: "italic" }}
+              >
                 <span>{toDoList.length} items left</span>
+                <button
+                  className="btn"
+                  style={{ background: "transparent", color: "grey" }} 
+                  onClick={clearToDo}                  
+                >
+                  Clear All
+                </button>
               </li>
             </ul>
           </div>
