@@ -1,12 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@100&display=swap');
 
-/* 
+body {
+  background-image: url('https://www.transparenttextures.com/patterns/paper.png');
+  background-repeat: repeat;
+}
 
-    You can write your own styles here...
-    
-    
-    ...Or you can use the import command to include 
-    other sylesheets into your bunde as well, e.j:
-    
-    import 'relative/path/to/stylesheet.scss';
+h1 {
+  font-size: 8rem;
+  font-weight: 100;
+  color: blueviolet;
+  font-family: 'Lato', sans-serif;
+}
 
-*/
+.list-container {
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+  margin-bottom: 0px;
+}
+
+.second, .third {
+  height: 5px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.second {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.third {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.list-group {
+  background-color: #fff;
+}
+
+.small-text {
+  font-size: 14px;
+  color: grey;
+  font-style: italic;
+}
+
+.fade-in {
+  animation: fadeIn ease 1s;
+}
+
+.list-group-item button {
+    opacity: 0;
+    background: transparent;
+    color: red;
+    transition: opacity 0.5s ease; /* Agrega un efecto de desvanecimiento */
+  }
+  
+  .list-group-item:hover button {
+    opacity: 1; /* Muestra la "X" cuando se pasa el cursor sobre el elemento de la lista */
+  }
+  
+  .list-group-item:hover button {
+    visibility: visible;
+  }
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
