@@ -22,7 +22,7 @@ const Home = () => {
         const data = await response.json();
         setToDoList(data);
       } else {
-        createUser(); // Si no se encuentra el usuario, lo crea
+        createUser(); 
       }
     } catch (error) {
       console.log(error);
@@ -101,7 +101,7 @@ const Home = () => {
 
   const clearToDo = async () => {
     await sendEmptyTask();
-    setToDoList([]); // Esto asegura que la lista en la interfaz se borre
+    setToDoList([]); 
   };
 
   const getTaskCount = () => {
