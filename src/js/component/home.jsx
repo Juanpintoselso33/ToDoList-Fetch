@@ -6,13 +6,28 @@ const Home = () => {
   const [toDoList, setToDoList] = useState([]);
 
   useEffect(() => {
-    createUser();
-    sendEmptyTask(); 
+    fetchData();
   }, []);
 
   useEffect(() => {
     updateToDo(toDoList);
   }, [toDoList]);
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch(
+        "https://playground.4geeks.com/apis/fake/todos/user/juanpintoselso"
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setToDoList(data);
+      } else {
+        createUser(); // Si no se encuentra el usuario, lo crea
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const createUser = async () => {
     const response = await fetch(
@@ -26,6 +41,7 @@ const Home = () => {
       }
     );
     const data = await response.json();
+    sendEmptyTask();
     console.log(data);
   };
 
@@ -57,23 +73,25 @@ const Home = () => {
   }
 
   const handleKeyPress = (event) => {
-    if (event.key === "Enter") {
-      setToDoList(toDoList.concat(inputValue));
+    if (event.key === "Enter" && inputValue.trim() !== "") {
+      if (toDoList.length === 1 && toDoList[0].label === "No hay tareas") {
+        setToDoList([{ label: inputValue, done: false }]);
+      } else {
+        setToDoList([...toDoList, { label: inputValue, done: false }]);
+      }
       setInputValue("");
     }
   };
-
+  
   const handleDelete = async (index) => {
     const newToDoList = [...toDoList];
     newToDoList.splice(index, 1);
   
     if (newToDoList.length === 0) {
-      sendEmptyTask(); 
-      await updateToDo(sendEmptyTask());
+      setToDoList([{ label: "No hay tareas", done: false }]);
     } else {
-      await updateToDo(newToDoList);
-    }  
-    setToDoList(newToDoList);
+      setToDoList(newToDoList);
+    }
   };
 
   const sendEmptyTask = async () => {
@@ -85,7 +103,14 @@ const Home = () => {
     await sendEmptyTask();
     setToDoList([]); // Esto asegura que la lista en la interfaz se borre
   };
-  
+
+  const getTaskCount = () => {
+    if (toDoList.length === 1 && toDoList[0].label === "No hay tareas") {
+      return 0;
+    }
+    return toDoList.length;
+  };
+
   return (
     <div className="container text-center">
       <div className="row">
@@ -109,31 +134,35 @@ const Home = () => {
                   style={{ fontSize: "20px", color: "grey" }}
                 />
               </li>
-              {toDoList.map((task, index) => (
-                <li
-                  className="list-group-item d-flex justify-content-between align-items-center border rounded-0 fade-in"
-                  key={index}
-                  style={{ color: "grey", fontSize: "20px" }}
-                >
-                  <span>{task}</span>
-                  <button
-                    className="btn"
-                    style={{ background: "transparent", color: "red" }}
-                    onClick={() => handleDelete(index)}
+              {toDoList.map((task, index) => {
+                if (toDoList.length === 1 && task.label === "No hay tareas")
+                  return null;
+                return (
+                  <li
+                    className="list-group-item d-flex justify-content-between align-items-center border rounded-0 fade-in"
+                    key={index}
+                    style={{ color: "grey", fontSize: "20px" }}
                   >
-                    X
-                  </button>
-                </li>
-              ))}
+                    <span>{task.label}</span>
+                    <button
+                      className="btn"
+                      style={{ background: "transparent", color: "red" }}
+                      onClick={() => handleDelete(index)}
+                    >
+                      X
+                    </button>
+                  </li>
+                );
+              })}
               <li
                 className="list-group-item d-flex justify-content-between align-items-center border rounded-0"
                 style={{ color: "grey", fontSize: "14px", fontStyle: "italic" }}
               >
-                <span>{toDoList.length} items left</span>
+                <span>{getTaskCount()} items left</span>
                 <button
                   className="btn"
-                  style={{ background: "transparent", color: "grey" }} 
-                  onClick={clearToDo}                  
+                  style={{ background: "transparent", color: "grey" }}
+                  onClick={clearToDo}
                 >
                   Clear All
                 </button>
