@@ -82,11 +82,10 @@ const Home = () => {
   };
 
   const clearToDo = async () => {
-    sendEmptyTask(); 
-    await updateToDo(emptyTask); 
-    setToDoList([]); 
+    await sendEmptyTask();
+    setToDoList([]); // Esto asegura que la lista en la interfaz se borre
   };
-
+  
   return (
     <div className="container text-center">
       <div className="row">
